@@ -5,6 +5,10 @@ for use in developing a Na+ flux assay. plate-processor.py may be more
 generally useful, as it converts the data-as-a-plate layout to a more
 useful long format.
 
+## Installation/usage
+ 1. Download required packages (`pip3 install -r requirements.txt`)
+ 2. `python plate-processor.py [-s sampling_rate] data.csv conditions.csv`
+
 ## Plate processor
 Process the data-as-a-plate layout to more useable format. Unfortunately,
 the time between plates (i.e., the sampling rate) is not output as part
