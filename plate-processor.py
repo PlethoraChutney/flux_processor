@@ -15,14 +15,11 @@ def read_plate_csv(filename, sampling_rate, conditions_key, plate_swap):
 
     row = 0
     time_index = 0
-    current_plate = []
-    data = pd.DataFrame(columns = ['Row', 'Column', 'Condition', 'Time', 'Plate', 'Fluorescence'])
+    plate_reads = []
     for line in lines:
         if line == 'end_plate':
             # reset every time we end a plate
             row = 0
-            data = pd.concat([data, pd.DataFrame(current_plate)])
-            current_plate = []
             time_index += 1
             continue
         
@@ -40,7 +37,7 @@ def read_plate_csv(filename, sampling_rate, conditions_key, plate_swap):
             # 
             # this is faster than directly modifying a pd dataframe, apparently
 
-            current_plate.append({
+            plate_reads.append({
                 'Row': ascii_uppercase[row],
                 'Column': col_index + 1,
                 'Time': time,
@@ -50,9 +47,7 @@ def read_plate_csv(filename, sampling_rate, conditions_key, plate_swap):
             })
         row += 1
     
-    # our file doesn't end with an empty line, so we need to add the
-    # last plate manually since it's not caught in the loop
-    data = pd.concat([data, pd.DataFrame(current_plate)])
+    data = pd.DataFrame(plate_reads)
     return data
 
 def main():
