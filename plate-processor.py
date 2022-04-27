@@ -4,7 +4,7 @@ import argparse
 import pandas as pd
 
 
-def read_plate_csv(filename, sampling_rate, conditions_key):
+def read_plate_csv(filename, sampling_rate, conditions_key, plate_swap):
     with open(filename, 'r') as f:
         # un-read cells are filled with '-'
         #
@@ -16,7 +16,7 @@ def read_plate_csv(filename, sampling_rate, conditions_key):
     row = 0
     time_index = 0
     current_plate = []
-    data = pd.DataFrame(columns = ['Row', 'Column', 'Condition', 'Time', 'Fluorescence'])
+    data = pd.DataFrame(columns = ['Row', 'Column', 'Condition', 'Time', 'Plate', 'Fluorescence'])
     for line in lines:
         if line == 'end_plate':
             # reset every time we end a plate
@@ -26,16 +26,27 @@ def read_plate_csv(filename, sampling_rate, conditions_key):
             time_index += 1
             continue
         
+        time = time_index * sampling_rate
+        offset = 0
+        plate = 'Equilibration'
+        for swap in plate_swap:
+            if swap[0] <= time_index * sampling_rate:
+                time += swap[1]
+                plate = swap[2]
+        time += offset
+
         for col_index in range(len(line)):
             # add an entry to our eventual dataframe
             # 
             # this is faster than directly modifying a pd dataframe, apparently
+
             current_plate.append({
                 'Row': ascii_uppercase[row],
                 'Column': col_index + 1,
-                'Time': time_index * sampling_rate,
+                'Time': time,
                 'Fluorescence': line[col_index],
-                'Condition': conditions_key[col_index][row]
+                'Condition': conditions_key[col_index][row],
+                'Plate': plate
             })
         row += 1
     
@@ -60,18 +71,26 @@ def main():
         help = 'Filename for conditions key csv.'
     )
     parser.add_argument(
-        '-s',
-        '--sampling-rate',
+        'sampling_rate',
         type = int,
-        help = 'Sampling rate for plates, in seconds. Default 4',
-        default = 4
+        help = 'Sampling rate for plates, in seconds. Default 4'
+    )
+    parser.add_argument(
+        '-p',
+        '--plate-swap',
+        type = str,
+        nargs = 3,
+        action = 'append',
+        help = 'Record plate removals. Provide the following arguments, separated with spaces: time plate removed (seconds, do not add earlier plate swap durations), duration of plate removal (seconds), new plate name. This option can be added multiple times.'
     )
 
     args = parser.parse_args()
 
+    if args.plate_swap:
+        plate_swap = [(int(x[0]), int(x[1]), x[2]) for x in args.plate_swap]
     conditions_key = pd.read_csv(args.conditions_key, header = None)
 
-    data = read_plate_csv(args.plate_data, args.sampling_rate, conditions_key)
+    data = read_plate_csv(args.plate_data, args.sampling_rate, conditions_key, plate_swap)
     output_name = f"processed_{os.path.split(args.plate_data)[1]}"
     data.to_csv(output_name, index = False)
 
