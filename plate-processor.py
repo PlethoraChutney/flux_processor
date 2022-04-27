@@ -10,8 +10,8 @@ def read_plate_csv(filename, sampling_rate, conditions_key, plate_swap):
         #
         # separate plate reads are separated by a line with no entries in it
         # with our processing this becomes [''], which we'll replace with 'end_plate'
-        lines = [x.rstrip().split(',') for x in f]
-        lines = [[int(y.strip()) for y in x if y.strip() != '-'] if x != [''] else 'end_plate' for x in lines]
+        lines = [[y.strip() for y in x.split(',')] for x in f]
+        lines = [[int(y) for y in x if y != '-'] if x != [''] else 'end_plate' for x in lines]
 
     row = 0
     time_index = 0
@@ -50,8 +50,7 @@ def read_plate_csv(filename, sampling_rate, conditions_key, plate_swap):
             })
         row += 1
     
-    data = pd.DataFrame(plate_reads)
-    return data
+    return pd.DataFrame(plate_reads)
 
 def main():
     parser = argparse.ArgumentParser(
