@@ -27,9 +27,11 @@ def read_plate_csv(filename, sampling_rate, conditions_key, plate_swap):
         offset = 0
         plate = 'Equilibration'
         for swap in plate_swap:
-            if swap[0] <= time_index * sampling_rate:
-                time += swap[1]
+            if swap[0] <= time:
+                offset += swap[1]
                 plate = swap[2]
+            else:
+                break
         time += offset
 
         for col_index in range(len(line)):
