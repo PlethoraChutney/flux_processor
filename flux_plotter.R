@@ -7,7 +7,7 @@ data <- raw_data %>%
   filter(Plate == 'Equilibration') %>% 
   filter(Time == max(Time)) %>% 
   select(Row, Column, 'Equil_Flr' = Fluorescence) %>% 
-  right_join(data, by = c('Row', 'Column')) %>% 
+  right_join(raw_data, by = c('Row', 'Column')) %>% 
   mutate(Fluorescence = Fluorescence / Equil_Flr)
 
 processed <- data %>% 

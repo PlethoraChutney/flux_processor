@@ -87,7 +87,9 @@ def main():
     args = parser.parse_args()
 
     if args.plate_swap:
-        plate_swap = [(int(x[0]), int(x[1]), x[2]) for x in args.plate_swap]
+        plate_swap = [(int(x[0]), int(x[1]), x[2].replace('_', ' ')) for x in args.plate_swap]
+    else:
+        plate_swap = []
     conditions_key = pd.read_csv(args.conditions_key, header = None)
 
     data = read_plate_csv(args.plate_data, args.sampling_rate, conditions_key, plate_swap)
