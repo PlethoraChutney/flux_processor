@@ -28,7 +28,7 @@ def read_plate_csv(filename, sampling_rate, conditions_key, plate_swap):
         plate = 'Equilibration'
         # swap is [removal_time, removal_duration, condition]
         for swap in plate_swap:
-            if swap[0] <= time:
+            if swap[0] * sampling_rate <= time:
                 offset += swap[1]
                 plate = swap[2]
             else:
@@ -78,7 +78,7 @@ def main():
         type = str,
         nargs = 3,
         action = 'append',
-        help = 'Record plate removals. Provide the following arguments, separated with spaces: time plate removed (seconds, do not add earlier plate swap durations), duration of plate removal (seconds), new plate name. This option can be added multiple times.'
+        help = 'Record plate removals. Provide the following arguments, separated with spaces: time plate removed (samples), duration of plate removal (seconds), new plate name. This option can be added multiple times.'
     )
 
     args = parser.parse_args()

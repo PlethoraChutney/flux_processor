@@ -1,7 +1,7 @@
 library(tidyverse)
 library(ggokabeito)
 
-raw_data <- read_csv('processed_test_data.csv', col_types = 'ffddff')
+raw_data <- read_csv('processed_Flux Assay Test.csv', col_types = 'ffddff')
 
 data <- raw_data %>% 
   filter(Plate == 'Equilibration') %>% 
