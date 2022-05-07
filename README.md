@@ -8,13 +8,20 @@ useful long format.
 ## Installation/usage
  1. Download required packages (`pip3 install -r requirements.txt`)
  2. `python plate-processor.py [-s sampling_rate] data.csv conditions.csv`
+ 3. Run the script:
+
+ ```python plate-processor.py {data.csv} {conditions.csv}```
 
 ## Plate processor
-Process the data-as-a-plate layout to more useable format. Unfortunately,
+Unfortunately,
 the time between plates (i.e., the sampling rate) is not output as part
-of the data, so it must be recorded and input by the user.
+of the data, so it must be recorded and input by the user. Format is as follows:
 
-A simple .csv file with conditions for each well laid out as a plate
-will fill those conditions into the appropriate column. That is, a
-`conditions.csv` file can be up to 8 rows tall and 12 columns wide,
-each containing a string representing the condition of that "well".
+```-p {cycle removed} {removal duration (s)} {name of reagent added}```
+
+You must include the A-H and 1-12 column/row in the `conditions.csv` template
+file so that the csv is the correct size and shape.
+
+## Plotter
+Automated plot production using R and tidyverse. The python script should
+run this automatically, but you can open and modify as you see fit.

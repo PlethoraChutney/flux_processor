@@ -2,6 +2,7 @@ import re
 import os
 import argparse
 import pandas as pd
+import subprocess
 
 well_pattern = re.compile('[A-Z][0-9]{2}')
 
@@ -92,6 +93,7 @@ def main():
     data = read_plate_csv(args.plate_data, conditions_key, plate_swap)
     output_name = f"processed_{os.path.split(args.plate_data)[1]}"
     data.to_csv(output_name, index = False)
+    subprocess.run(['Rscript', 'flux_plotter.R'])
 
 if __name__ == '__main__':
     main()

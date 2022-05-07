@@ -1,7 +1,10 @@
 library(tidyverse)
 library(ggokabeito)
 
-raw_data <- read_csv(list.files(pattern = 'processed.*.csv')[1], col_types = 'dffffd')
+filename <- list.files(pattern = 'processed.*\\.csv')[1]
+base_name <- str_replace(filename, 'processed_flux_assay_', '')
+base_name <- str_replace(base_name, '.csv', '')
+raw_data <- read_csv(filename, col_types = 'dffffd')
 
 data <- raw_data %>% 
   filter(Plate == 'Equilibration') %>% 
@@ -42,11 +45,11 @@ processed %>%
     data = joiners,
     aes(x = Time, y = Mean_Fluorescence, group = interaction(Condition, Plate), color = Condition),
     inherit.aes = FALSE,
-    size = 2,
+    size = 1,
     linetype = 'dotted',
     lineend = 'round'
   ) +
-  geom_line(size = 2, lineend = 'round') +
+  geom_line(size = 1, lineend = 'round') +
   scale_color_okabe_ito() +
   scale_fill_manual(values = c(
     "#0077bb",
@@ -64,7 +67,7 @@ processed %>%
     fill = 'Reagent added'
   ) +
   expand_limits(y = c(0, 1))
-ggsave('_Mean.png', width = 6, height = 4)
+ggsave(paste0(base_name, '_Mean.png'), width = 7, height = 4, bg = 'white')
 
 data %>% 
   ggplot(aes(x = Time, y = Fluorescence, color = Condition, group = interaction(Row, Column, Plate))) +
@@ -95,4 +98,4 @@ data %>%
     fill = 'Reagent added'
   ) +
   expand_limits(y = c(0, 1))
-ggsave('_Raw.png', width = 6, height = 4)
+ggsave(paste0(base_name, '_Raw.png'), width = 7, height = 4, bg = 'white')
