@@ -45,11 +45,11 @@ processed %>%
     data = joiners,
     aes(x = Time, y = Mean_Fluorescence, group = interaction(Condition, Plate), color = Condition),
     inherit.aes = FALSE,
-    size = 1,
+    size = 2,
     linetype = 'dotted',
     lineend = 'round'
   ) +
-  geom_line(size = 1, lineend = 'round') +
+  geom_line(size = 2, lineend = 'round') +
   scale_color_okabe_ito() +
   scale_fill_manual(values = c(
     "#0077bb",
